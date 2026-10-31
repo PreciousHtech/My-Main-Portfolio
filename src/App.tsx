@@ -9,6 +9,7 @@ import { Skills } from './components/Skills';
 import { About } from './components/About';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
+import { Analytics } from '@vercel/analytics/react';
 
 // Create a single stable React Query Client
 const queryClient = new QueryClient({
@@ -56,6 +57,9 @@ export default function App() {
 
           {/* 8. Footer */}
           <Footer />
+
+          {/* Vercel Web Analytics */}
+          <Analytics />
         </div>
       </ThemeProvider>
     </QueryClientProvider>

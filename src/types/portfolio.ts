@@ -2,7 +2,7 @@ export interface Project {
   name: string;
   description: string;
   html_url: string;
-  homepage: string | null;
+  homepage?: string | null;
   language: string | null;
   topics: string[];
   stargazers_count: number;
