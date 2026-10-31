@@ -50,14 +50,19 @@ export function Services({ onSelectService }: ServicesProps) {
     if (onSelectService) {
       onSelectService(serviceTitle);
     }
-    const target = document.querySelector('#contact');
+    const target = document.querySelector('#contact') as HTMLElement | null;
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
+      const navHeight = document.querySelector('header')?.offsetHeight || 72;
+      const targetTop = target.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({
+        top: Math.max(0, targetTop - navHeight),
+        behavior: 'smooth'
+      });
     }
   };
 
   return (
-    <section id="services" className="py-20 md:py-28 bg-neutral-100/60 dark:bg-neutral-900/40 border-y border-neutral-200/80 dark:border-neutral-800/80">
+    <section id="services" className="scroll-mt-20 py-20 md:py-28 bg-neutral-100/60 dark:bg-neutral-900/40 border-y border-neutral-200/80 dark:border-neutral-800/80">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-2xl mb-14">

@@ -85,7 +85,7 @@ export class MailerService {
           <p style="color: #1f2937; white-space: pre-wrap; margin: 0; line-height: 1.6; font-size: 14px;">${contact.message}</p>
         </div>
         <p style="color: #9ca3af; font-size: 12px; margin-top: 24px; text-align: center;">
-          Sent to ${toEmail} from Precious Hart Portfolio Backend
+          Sent to ${toEmail} from Precious Ezekiel-Hart Portfolio Backend
         </p>
       </div>
     `;
@@ -94,7 +94,7 @@ export class MailerService {
     if (resend) {
       try {
         const { data, error } = await resend.emails.send({
-          from: 'Precious Hart Portfolio <onboarding@resend.dev>',
+          from: 'Precious Ezekiel-Hart Portfolio <onboarding@resend.dev>',
           to: [toEmail],
           replyTo: contact.email,
           subject,

@@ -29,13 +29,9 @@ router.post('/', contactRateLimiter, async (req: Request, res: Response, next: N
     res.json({
       success: true,
       data: {
-        message:
-          result.provider === 'resend' || result.provider === 'smtp'
-            ? `Your message has been delivered directly to Precious Hart at ${result.recipient}!`
-            : `Your inquiry has been logged! To send directly from your personal mail app, click below.`,
+        message: `Your message has been delivered directly to Precious Ezekiel-Hart at ${result.recipient}!`,
         provider: result.provider,
-        recipient: result.recipient,
-        mailtoUrl: result.mailtoUrl
+        recipient: result.recipient
       }
     });
   } catch (err) {

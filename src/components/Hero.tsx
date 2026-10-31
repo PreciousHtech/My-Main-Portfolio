@@ -7,14 +7,19 @@ import portraitImg from '../assets/images/profile.jpg';
 const PORTRAIT_PATH = portraitImg;
 
 // Uploaded CV by Precious Ezekiel-Hart
-const CV_PATH = '/assets/aistudio/Software_Engineer_CV__1___3__24b75c40.pdf';
+const CV_PATH = './assets/Software_Engineer_CV.pdf';
 
 export function Hero() {
   const handleHireMeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const target = document.querySelector('#contact');
+    const target = document.querySelector('#contact') as HTMLElement | null;
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
+      const navHeight = document.querySelector('header')?.offsetHeight || 72;
+      const targetTop = target.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({
+        top: Math.max(0, targetTop - navHeight),
+        behavior: 'smooth'
+      });
     }
   };
 
@@ -78,7 +83,7 @@ export function Hero() {
 
               <a
                 href={CV_PATH}
-                download="Software_Engineer_CV_Precious_Ezekiel_Hart.pdf"
+                download="Software_Engineer_CV.pdf"
                 target="_blank"
                 rel="noreferrer noopener"
                 className="inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-neutral-700 dark:text-neutral-200 bg-neutral-100 hover:bg-neutral-200/80 dark:bg-neutral-800 dark:hover:bg-neutral-700/80 border border-neutral-200 dark:border-neutral-700 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-blue-600"

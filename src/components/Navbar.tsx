@@ -15,6 +15,17 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile drawer on desktop resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const navLinks = [
     { name: 'Services', href: '#services' },
     { name: 'Projects', href: '#projects' },
@@ -26,9 +37,32 @@ export function Navbar() {
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    const target = document.querySelector(href);
+
+    if (href === '#' || href === '') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const target = document.querySelector(href) as HTMLElement | null;
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
+      // Calculate sticky navbar height
+      const navbar = document.querySelector('header');
+      const navHeight = navbar ? navbar.offsetHeight : 72;
+
+      // Calculate absolute document offset of the target section
+      const elementPosition = target.getBoundingClientRect().top + window.pageYOffset;
+      // Scroll so the TOP of the section is perfectly visible right below the sticky header
+      const offsetPosition = Math.max(0, elementPosition - navHeight);
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+
+      // Update URL hash cleanly
+      if (window.history && window.history.pushState) {
+        window.history.pushState(null, '', href);
+      }
     }
   };
 
@@ -44,6 +78,7 @@ export function Navbar() {
         {/* Zone 1: Single Brand Wordmark */}
         <a
           href="#"
+          onClick={(e) => handleLinkClick(e, '#')}
           className="text-lg font-bold tracking-tight text-neutral-900 dark:text-neutral-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors whitespace-nowrap shrink-0"
         >
           Precious Ezekiel-Hart
@@ -107,66 +142,76 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer & Backdrop */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50/98 dark:bg-neutral-950/98 backdrop-blur-lg px-4 pt-3 pb-6">
-          <nav className="flex flex-col space-y-3">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={(e) => handleLinkClick(e, link.href)}
-                className="px-3 py-2 text-base font-medium text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg transition-colors"
-              >
-                {link.name}
-              </a>
-            ))}
+        <>
+          {/* Backdrop overlay */}
+          <div
+            className="md:hidden fixed inset-0 top-18 bg-black/40 backdrop-blur-xs z-40 transition-opacity"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
 
-            {/* Mobile Theme Selector Switch */}
-            <div className="flex items-center justify-between px-3 py-3 border-t border-neutral-200 dark:border-neutral-800">
-              <span className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
-                Appearance
-              </span>
-              <div className="flex items-center gap-1 bg-neutral-200/70 dark:bg-neutral-900 p-1 rounded-lg border border-neutral-300/60 dark:border-neutral-800">
-                <button
-                  type="button"
-                  onClick={() => setTheme('light')}
-                  className={`px-3 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition-colors ${
-                    theme === 'light'
-                      ? 'bg-white text-neutral-900 shadow-xs'
-                      : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
-                  }`}
+          {/* Floating Mobile Drawer */}
+          <div className="md:hidden absolute top-full left-0 right-0 w-full border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50/98 dark:bg-neutral-950/98 backdrop-blur-xl px-4 pt-3 pb-6 shadow-2xl z-50">
+            <nav className="flex flex-col space-y-3">
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={(e) => handleLinkClick(e, link.href)}
+                  className="px-3 py-2 text-base font-medium text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-lg transition-colors"
                 >
-                  <Sun className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Light</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTheme('dark')}
-                  className={`px-3 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition-colors ${
-                    theme === 'dark'
-                      ? 'bg-neutral-800 text-white shadow-xs'
-                      : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
-                  }`}
-                >
-                  <Moon className="w-3.5 h-3.5 text-blue-400" />
-                  <span>Dark</span>
-                </button>
+                  {link.name}
+                </a>
+              ))}
+
+              {/* Mobile Theme Selector Switch */}
+              <div className="flex items-center justify-between px-3 py-3 border-t border-neutral-200 dark:border-neutral-800">
+                <span className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                  Appearance
+                </span>
+                <div className="flex items-center gap-1 bg-neutral-200/70 dark:bg-neutral-900 p-1 rounded-lg border border-neutral-300/60 dark:border-neutral-800">
+                  <button
+                    type="button"
+                    onClick={() => setTheme('light')}
+                    className={`px-3 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition-colors ${
+                      theme === 'light'
+                        ? 'bg-white text-neutral-900 shadow-xs'
+                        : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
+                    }`}
+                  >
+                    <Sun className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Light</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTheme('dark')}
+                    className={`px-3 py-1 text-xs font-semibold rounded-md flex items-center gap-1.5 transition-colors ${
+                      theme === 'dark'
+                        ? 'bg-neutral-800 text-white shadow-xs'
+                        : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
+                    }`}
+                  >
+                    <Moon className="w-3.5 h-3.5 text-blue-400" />
+                    <span>Dark</span>
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <div className="pt-2">
-              <a
-                href="#contact"
-                onClick={(e) => handleLinkClick(e, '#contact')}
-                className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
-              >
-                <span>Hire me</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </a>
-            </div>
-          </nav>
-        </div>
+              <div className="pt-2">
+                <a
+                  href="#contact"
+                  onClick={(e) => handleLinkClick(e, '#contact')}
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                >
+                  <span>Hire me</span>
+                  <ArrowUpRight className="w-4 h-4" />
+                </a>
+              </div>
+            </nav>
+          </div>
+        </>
       )}
     </header>
   );

@@ -71,7 +71,7 @@ const SKILL_GROUPS: SkillGroup[] = [
 
 export function Skills() {
   return (
-    <section id="skills" className="py-20 md:py-28 bg-neutral-100/60 dark:bg-neutral-900/40 border-y border-neutral-200/80 dark:border-neutral-800/80">
+    <section id="skills" className="scroll-mt-20 py-20 md:py-28 bg-neutral-100/60 dark:bg-neutral-900/40 border-y border-neutral-200/80 dark:border-neutral-800/80">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-2xl mb-14">

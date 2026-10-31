@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, ExternalLink, Github, Star, Calendar, Loader2 } from 'lucide-react';
+import { X, ExternalLink, Github, Calendar, Loader2 } from 'lucide-react';
 import { Project } from '../types/portfolio';
 import { fetchProjectByName } from '../services/api';
 
@@ -98,11 +98,6 @@ export function ProjectModal({ projectName, onClose }: ProjectModalProps) {
             <div className="pr-10">
               <div className="flex items-center gap-2 text-xs font-mono text-neutral-500 dark:text-neutral-400 mb-2">
                 <span>{project.language || 'Software'}</span>
-                <span aria-hidden="true">·</span>
-                <span className="flex items-center gap-1">
-                  <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                  <span className="tabular-nums">{project.stargazers_count}</span>
-                </span>
                 <span aria-hidden="true">·</span>
                 <span className="flex items-center gap-1">
                   <Calendar className="w-3.5 h-3.5" />

@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Github, ExternalLink, Star, BookOpen, AlertCircle, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Github, ExternalLink, BookOpen, AlertCircle, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { fetchProjects } from '../services/api';
 import { Project } from '../types/portfolio';
@@ -70,13 +70,18 @@ export function Projects() {
       setCurrentPage(newPage);
       const target = document.getElementById('projects');
       if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
+        const navHeight = document.querySelector('header')?.offsetHeight || 72;
+        const targetTop = target.getBoundingClientRect().top + window.pageYOffset;
+        window.scrollTo({
+          top: Math.max(0, targetTop - navHeight),
+          behavior: 'smooth'
+        });
       }
     }
   };
 
   return (
-    <section id="projects" className="py-20 md:py-28 relative">
+    <section id="projects" className="scroll-mt-20 py-20 md:py-28 relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
@@ -134,9 +139,8 @@ export function Projects() {
                 className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-6 flex flex-col justify-between animate-pulse h-72 min-w-0 overflow-hidden"
               >
                 <div>
-                  <div className="flex justify-between items-center mb-4">
+                  <div className="flex items-center mb-4">
                     <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded w-24"></div>
-                    <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded w-10"></div>
                   </div>
                   <div className="h-6 bg-neutral-200 dark:bg-neutral-800 rounded w-3/4 mb-3"></div>
                   <div className="space-y-2">
@@ -204,13 +208,9 @@ export function Projects() {
               >
                 <div className="min-w-0 w-full">
                   {/* Top unboxed metadata line */}
-                  <div className="flex items-center justify-between text-xs font-mono text-neutral-500 dark:text-neutral-400 mb-3 gap-2">
-                    <span className="font-semibold text-blue-600 dark:text-blue-400 truncate max-w-[65%]">
+                  <div className="flex items-center text-xs font-mono text-neutral-500 dark:text-neutral-400 mb-3">
+                    <span className="font-semibold text-blue-600 dark:text-blue-400 truncate">
                       {project.language || 'Other'}
-                    </span>
-                    <span className="inline-flex items-center gap-1 shrink-0">
-                      <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                      <span className="tabular-nums">{project.stargazers_count}</span>
                     </span>
                   </div>
 

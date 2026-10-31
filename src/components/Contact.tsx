@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Github, Send, Loader2, CheckCircle2, AlertCircle, ArrowUpRight, ExternalLink } from 'lucide-react';
+import { Mail, Github, Send, Loader2, CheckCircle2, AlertCircle, ArrowUpRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { sendContactMessage } from '../services/api';
 import { ContactFormData, ContactResponse } from '../types/portfolio';
@@ -89,7 +89,7 @@ export function Contact({ selectedService }: ContactProps) {
   const githubUrl = import.meta.env.VITE_GITHUB_URL || 'https://github.com/PreciousHtech';
 
   return (
-    <section id="contact" className="py-20 md:py-28 bg-neutral-100/60 dark:bg-neutral-900/40 border-t border-neutral-200/80 dark:border-neutral-800/80">
+    <section id="contact" className="scroll-mt-20 py-20 md:py-28 bg-neutral-100/60 dark:bg-neutral-900/40 border-t border-neutral-200/80 dark:border-neutral-800/80">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left Column: Direct Inquiries & Links */}
@@ -192,27 +192,11 @@ export function Contact({ selectedService }: ContactProps) {
                   />
                   <div className="flex-1">
                     <h4 className="text-sm font-semibold text-neutral-900 dark:text-white">
-                      {submissionResult.provider === 'resend' || submissionResult.provider === 'smtp'
-                        ? 'Inquiry Dispatched to Inbox!'
-                        : 'Inquiry Received!'}
+                      Inquiry Dispatched to Inbox!
                     </h4>
                     <p className="text-xs text-neutral-600 dark:text-neutral-300 mt-1">
                       {submissionResult.message}
                     </p>
-
-                    {/* 1-Click Launch Email Client Action */}
-                    {submissionResult.mailtoUrl && submissionResult.provider !== 'resend' && submissionResult.provider !== 'smtp' && (
-                      <div className="mt-4 pt-3 border-t border-neutral-200 dark:border-neutral-800/80 flex items-center gap-3">
-                        <a
-                          href={submissionResult.mailtoUrl}
-                          className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-xs"
-                        >
-                          <Mail className="w-3.5 h-3.5" />
-                          <span>Send Now via Gmail / Email Client</span>
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -321,17 +305,17 @@ export function Contact({ selectedService }: ContactProps) {
                 />
               </div>
 
-              {/* Actions row: Submit and Direct Email */}
-              <div className="pt-2 flex flex-col sm:flex-row gap-3">
+              {/* Submit Button */}
+              <div className="pt-2">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 rounded-lg transition-colors shadow-xs disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-blue-600"
+                  className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 rounded-lg transition-colors shadow-xs disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-blue-600 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Sending...</span>
+                      <span>Sending inquiry...</span>
                     </>
                   ) : (
                     <>
@@ -340,19 +324,6 @@ export function Contact({ selectedService }: ContactProps) {
                     </>
                   )}
                 </button>
-
-                <a
-                  href={`mailto:${directEmail}?subject=${encodeURIComponent(
-                    formData.service ? `[Inquiry] ${formData.service}` : 'Project Inquiry for Precious Hart'
-                  )}&body=${encodeURIComponent(
-                    formData.message || 'Hello Precious,\n\nI would like to discuss a project with you.'
-                  )}`}
-                  className="inline-flex items-center justify-center gap-2 py-3 px-4 text-xs font-semibold text-neutral-700 dark:text-neutral-200 bg-neutral-100 hover:bg-neutral-200/80 dark:bg-neutral-800 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-blue-600 whitespace-nowrap"
-                  title="Open draft directly in your preferred email app"
-                >
-                  <Mail className="w-4 h-4 text-neutral-500" />
-                  <span>Email Directly</span>
-                </a>
               </div>
             </form>
           </motion.div>

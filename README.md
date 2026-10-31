@@ -125,9 +125,6 @@ Inquiries submitted through your portfolio are addressed to `CONTACT_TO_EMAIL=pr
    CONTACT_TO_EMAIL=precioushart205@gmail.com
    ```
 
-#### Option C: Direct 1-Click Client Dispatch
-- The contact form includes a direct **"Email Directly"** button that generates a pre-formatted draft in the visitor's mail client (Gmail, Outlook, Apple Mail) sending straight to `precioushart205@gmail.com`.
-
 ### Frontend (`/client/.env` or Vercel/Netlify environment)
 | Variable | Description | Default |
 |---|---|---|
