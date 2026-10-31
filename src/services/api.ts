@@ -1,7 +1,7 @@
 import { ApiResponse, ContactFormData, ContactResponse, Project } from '../types/portfolio';
 
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
 const GITHUB_USERNAME = 'PreciousHtech';
+const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
 
 // Authentic repositories snapshot of Precious Ezekiel-Hart
 // Guarantees zero-downtime even on static hosts (Vercel) or when GitHub API is rate-limited
@@ -22,6 +22,7 @@ const STATIC_REPOSITORIES: Project[] = [
     name: 'My-Main-Portfolio',
     description: 'Personal portfolio of Precious Ezekiel-Hart showcasing full-stack engineering, projects, and expertise.',
     html_url: 'https://github.com/PreciousHtech/My-Main-Portfolio',
+    homepage: null,
     language: 'TypeScript',
     topics: ['portfolio', 'react', 'vite', 'tailwind'],
     stargazers_count: 0,
@@ -33,6 +34,7 @@ const STATIC_REPOSITORIES: Project[] = [
     name: 'My-Portfolio',
     description: 'Personal portfolio repository designed to showcase software engineering work and projects.',
     html_url: 'https://github.com/PreciousHtech/My-Portfolio',
+    homepage: null,
     language: 'HTML',
     topics: ['portfolio', 'web-development'],
     stargazers_count: 0,
@@ -44,6 +46,7 @@ const STATIC_REPOSITORIES: Project[] = [
     name: 'Suxul-E-commerce',
     description: 'Modern e-commerce platform built with responsive catalog browsing and shopping cart features.',
     html_url: 'https://github.com/PreciousHtech/Suxul-E-commerce',
+    homepage: null,
     language: 'TypeScript',
     topics: ['ecommerce', 'react', 'shopping'],
     stargazers_count: 0,
@@ -55,6 +58,7 @@ const STATIC_REPOSITORIES: Project[] = [
     name: 'Machine-Translator',
     description: 'Natural language machine translation utility engineered for real-time text processing.',
     html_url: 'https://github.com/PreciousHtech/Machine-Translator',
+    homepage: null,
     language: 'JavaScript',
     topics: ['machine-learning', 'translator', 'nlp'],
     stargazers_count: 0,
@@ -66,6 +70,7 @@ const STATIC_REPOSITORIES: Project[] = [
     name: 'Movie-Website',
     description: 'Dynamic movie database web application featuring TMDB API integration and real-time search.',
     html_url: 'https://github.com/PreciousHtech/Movie-Website',
+    homepage: null,
     language: 'JavaScript',
     topics: ['movies', 'tmdb-api', 'react-router'],
     stargazers_count: 0,
@@ -77,6 +82,7 @@ const STATIC_REPOSITORIES: Project[] = [
     name: 'interns_on_boarding',
     description: 'Structured onboarding workflows and developer guides for new engineering interns.',
     html_url: 'https://github.com/PreciousHtech/interns_on_boarding',
+    homepage: null,
     language: 'Software',
     topics: ['onboarding', 'documentation'],
     stargazers_count: 0,
@@ -86,28 +92,20 @@ const STATIC_REPOSITORIES: Project[] = [
   }
 ];
 
+/**
+ * Direct Client-Side GitHub API Fetching
+ * Queries GitHub's public API directly from the browser for instant, real-time repository updates
+ * with zero reliance on backend server infrastructure.
+ */
 export async function fetchProjects(): Promise<Project[]> {
-  // Strategy 1: Attempt local or configured backend API (/api/projects)
-  try {
-    const url = `${API_BASE}/projects`;
-    const res = await fetch(url);
-    if (res.ok) {
-      const contentType = res.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        const result: ApiResponse<Project[]> = await res.json();
-        if (result.success && Array.isArray(result.data) && result.data.length > 0) {
-          return result.data;
-        }
-      }
-    }
-  } catch {
-    // If backend route is not available (e.g. static host like Vercel), cleanly fall through
-  }
-
-  // Strategy 2: Direct Client-Side GitHub API Fetch (Guarantees live project display on Vercel/Netlify)
   try {
     const githubUrl = `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=30`;
-    const res = await fetch(githubUrl);
+    const res = await fetch(githubUrl, {
+      headers: {
+        Accept: 'application/vnd.github.v3+json'
+      }
+    });
+
     if (res.ok) {
       const repos = await res.json();
       if (Array.isArray(repos) && repos.length > 0) {
@@ -119,7 +117,7 @@ export async function fetchProjects(): Promise<Project[]> {
             html_url: repo.html_url,
             homepage:
               repo.homepage ||
-              (repo.name === 'Great_Star_Gem_Technologies_Limited' ? 'https://greatstargem.com' : undefined),
+              (repo.name === 'Great_Star_Gem_Technologies_Limited' ? 'https://greatstargem.com' : null),
             language: repo.language || 'Software',
             topics: repo.topics || [],
             stargazers_count: repo.stargazers_count || 0,
@@ -129,40 +127,30 @@ export async function fetchProjects(): Promise<Project[]> {
           }));
       }
     }
-  } catch {
-    // If GitHub API rate limits (HTTP 403) or is blocked, cleanly fall through
+  } catch (err) {
+    console.warn('Direct GitHub API fetch encountered network or rate-limit issue, loading verified fallback:', err);
   }
 
-  // Strategy 3: Zero-downtime verified authentic repository cache
+  // Backup Strategy: Guaranteed authentic repository cache
   return STATIC_REPOSITORIES;
 }
 
+/**
+ * Direct Client-Side Project Detail & Markdown README Fetching
+ */
 export async function fetchProjectByName(name: string): Promise<Project> {
-  // Strategy 1: Attempt backend API
   try {
-    const url = `${API_BASE}/projects/${encodeURIComponent(name)}`;
-    const res = await fetch(url);
-    if (res.ok) {
-      const contentType = res.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        const result: ApiResponse<Project> = await res.json();
-        if (result.success && result.data) {
-          return result.data;
-        }
+    const repoRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${encodeURIComponent(name)}`, {
+      headers: {
+        Accept: 'application/vnd.github.v3+json'
       }
-    }
-  } catch {
-    // Fall through
-  }
+    });
 
-  // Strategy 2: Direct GitHub API & Raw README
-  try {
-    const repoRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${encodeURIComponent(name)}`);
     if (repoRes.ok) {
       const repo = await repoRes.json();
       let readme = repo.description || '';
 
-      // Try fetching raw README directly from GitHub
+      // Fetch raw README text directly from GitHub raw CDN
       try {
         const readmeRes = await fetch(
           `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${encodeURIComponent(name)}/main/README.md`
@@ -187,7 +175,7 @@ export async function fetchProjectByName(name: string): Promise<Project> {
         html_url: repo.html_url,
         homepage:
           repo.homepage ||
-          (repo.name === 'Great_Star_Gem_Technologies_Limited' ? 'https://greatstargem.com' : undefined),
+          (repo.name === 'Great_Star_Gem_Technologies_Limited' ? 'https://greatstargem.com' : null),
         language: repo.language || 'Software',
         topics: repo.topics || [],
         stargazers_count: repo.stargazers_count || 0,
@@ -196,11 +184,11 @@ export async function fetchProjectByName(name: string): Promise<Project> {
         summary: repo.description || ''
       };
     }
-  } catch {
-    // Fall through
+  } catch (err) {
+    console.warn('Direct GitHub repository detail fetch error:', err);
   }
 
-  // Strategy 3: Check static cache
+  // Fallback to static cache
   const match = STATIC_REPOSITORIES.find((p) => p.name.toLowerCase() === name.toLowerCase());
   if (match) {
     return match;
@@ -209,6 +197,9 @@ export async function fetchProjectByName(name: string): Promise<Project> {
   throw new Error(`Project details for "${name}" could not be retrieved.`);
 }
 
+/**
+ * Submit Contact Form Message
+ */
 export async function sendContactMessage(payload: ContactFormData): Promise<ContactResponse> {
   const url = `${API_BASE}/contact`;
   try {
@@ -227,7 +218,7 @@ export async function sendContactMessage(payload: ContactFormData): Promise<Cont
       }
     }
   } catch {
-    // If backend is unreachable on static deployment, generate friendly response
+    // If backend route is unreachable on static hosting, provide friendly confirmation
   }
 
   return {
