@@ -5,6 +5,10 @@ export const contactRateLimiter = rateLimit({
   max: 5, // Limit each IP to 5 requests per hour
   standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
   legacyHeaders: false, // Disable `X-RateLimit-*` headers
+  validate: {
+    xForwardedForHeader: false,
+    default: true
+  },
   message: {
     success: false,
     error: {

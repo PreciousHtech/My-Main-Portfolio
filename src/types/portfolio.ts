@@ -24,6 +24,7 @@ export interface ApiResponse<T> {
 export interface ContactFormData {
   name: string;
   email: string;
+  phone?: string;
   service: string;
   message: string;
   hp?: string;

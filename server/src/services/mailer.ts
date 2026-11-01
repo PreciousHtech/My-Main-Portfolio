@@ -52,12 +52,12 @@ export class MailerService {
     const smtp = this.getSmtpTransporter();
 
     const subject = `[Portfolio Inquiry] ${contact.name} - ${contact.service}`;
-    const textBody = `Name: ${contact.name}\nEmail: ${contact.email}\nService: ${contact.service}\n\nMessage:\n${contact.message}`;
+    const textBody = `Name: ${contact.name}\nEmail: ${contact.email}\nPhone: ${contact.phone || 'Not provided'}\nService: ${contact.service}\n\nMessage:\n${contact.message}`;
 
     // Mailto fallback link
     const mailtoSubject = encodeURIComponent(subject);
     const mailtoBody = encodeURIComponent(
-      `Hello Precious,\n\nName: ${contact.name}\nEmail: ${contact.email}\nService: ${contact.service}\n\nMessage:\n${contact.message}`
+      `Hello Precious,\n\nName: ${contact.name}\nEmail: ${contact.email}\nPhone: ${contact.phone || 'Not provided'}\nService: ${contact.service}\n\nMessage:\n${contact.message}`
     );
     const mailtoUrl = `mailto:${toEmail}?subject=${mailtoSubject}&body=${mailtoBody}`;
 
@@ -74,6 +74,10 @@ export class MailerService {
           <tr>
             <td style="padding: 8px 0; color: #6b7280;"><strong>Email Address:</strong></td>
             <td style="padding: 8px 0; color: #111827;"><a href="mailto:${contact.email}" style="color: #2563eb; text-decoration: none;">${contact.email}</a></td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #6b7280;"><strong>Phone / WhatsApp:</strong></td>
+            <td style="padding: 8px 0; color: #111827;">${contact.phone ? `<a href="tel:${contact.phone}" style="color: #2563eb; text-decoration: none;">${contact.phone}</a>` : '<span style="color: #9ca3af;">Not provided</span>'}</td>
           </tr>
           <tr>
             <td style="padding: 8px 0; color: #6b7280;"><strong>Service Requested:</strong></td>

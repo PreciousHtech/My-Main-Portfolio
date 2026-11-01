@@ -15,7 +15,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ success: false, error: { message: 'Method not allowed' } });
   }
 
-  const { name, email, service, message, hp } = req.body || {};
+  const { name, email, phone, service, message, hp } = req.body || {};
 
   // Honeypot check
   if (hp) {
@@ -42,7 +42,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
       const resend = new Resend(apiKey.trim());
       const subject = `[Portfolio Inquiry] ${name} - ${service || 'General Inquiry'}`;
-      const textContent = `Name: ${name}\nEmail: ${email}\nService: ${service || 'General'}\n\nMessage:\n${message}`;
+      const textContent = `Name: ${name}\nEmail: ${email}\nPhone: ${phone || 'Not provided'}\nService: ${service || 'General'}\n\nMessage:\n${message}`;
 
       const { data, error } = await resend.emails.send({
         from: 'Precious Ezekiel-Hart Portfolio <onboarding@resend.dev>',
@@ -55,6 +55,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             <h2 style="color: #111827; margin-top: 0;">New Portfolio Inquiry</h2>
             <p><strong>Name:</strong> ${name}</p>
             <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+            <p><strong>Phone:</strong> ${phone ? `<a href="tel:${phone}">${phone}</a>` : 'Not provided'}</p>
             <p><strong>Service:</strong> ${service || 'General'}</p>
             <hr style="border: 0; border-top: 1px solid #eee; margin: 16px 0;" />
             <div style="background: #f9fafb; padding: 12px; border-radius: 6px;">

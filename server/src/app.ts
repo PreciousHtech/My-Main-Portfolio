@@ -8,6 +8,9 @@ import { errorHandler } from './middleware/errorHandler.js';
 export function createApp() {
   const app = express();
 
+  // Trust reverse proxies (Google Cloud Run, Vercel, Vite dev server)
+  app.set('trust proxy', 1);
+
   // Security headers with helmet
   app.use(
     helmet({

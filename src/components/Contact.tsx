@@ -20,6 +20,7 @@ export function Contact({ selectedService }: ContactProps) {
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
+    phone: '',
     service: 'Web Development',
     message: '',
     hp: '' // Honeypot
@@ -74,6 +75,7 @@ export function Contact({ selectedService }: ContactProps) {
       setFormData({
         name: '',
         email: '',
+        phone: '',
         service: 'Web Development',
         message: '',
         hp: ''
@@ -267,25 +269,43 @@ export function Contact({ selectedService }: ContactProps) {
                 </div>
               </div>
 
-              {/* Service Dropdown */}
-              <div>
-                <label htmlFor="contact_service" className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
-                  Interested Service <span className="text-red-500">*</span>
-                </label>
-                <select
-                  id="contact_service"
-                  name="service"
-                  required
-                  value={formData.service}
-                  onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 text-sm bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-lg text-neutral-900 dark:text-white focus-visible:outline-2 focus-visible:outline-blue-600 transition-colors"
-                >
-                  {SERVICE_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Phone / WhatsApp */}
+                <div>
+                  <label htmlFor="contact_phone" className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
+                    Phone / WhatsApp <span className="text-neutral-400 font-normal">(Optional)</span>
+                  </label>
+                  <input
+                    type="tel"
+                    id="contact_phone"
+                    name="phone"
+                    placeholder="+234 800 000 0000"
+                    value={formData.phone || ''}
+                    onChange={handleChange}
+                    className="w-full px-3.5 py-2.5 text-sm bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-lg text-neutral-900 dark:text-white placeholder:text-neutral-400 focus-visible:outline-2 focus-visible:outline-blue-600 transition-colors"
+                  />
+                </div>
+
+                {/* Service Dropdown */}
+                <div>
+                  <label htmlFor="contact_service" className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
+                    Interested Service <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    id="contact_service"
+                    name="service"
+                    required
+                    value={formData.service}
+                    onChange={handleChange}
+                    className="w-full px-3.5 py-2.5 text-sm bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-lg text-neutral-900 dark:text-white focus-visible:outline-2 focus-visible:outline-blue-600 transition-colors"
+                  >
+                    {SERVICE_OPTIONS.map((opt) => (
+                      <option key={opt} value={opt}>
+                        {opt}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               {/* Message */}
