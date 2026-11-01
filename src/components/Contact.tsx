@@ -194,11 +194,22 @@ export function Contact({ selectedService }: ContactProps) {
                   />
                   <div className="flex-1">
                     <h4 className="text-sm font-semibold text-neutral-900 dark:text-white">
-                      Inquiry Dispatched to Inbox!
+                      Inquiry Dispatched!
                     </h4>
                     <p className="text-xs text-neutral-600 dark:text-neutral-300 mt-1">
                       {submissionResult.message}
                     </p>
+                    {submissionResult.mailtoUrl && (
+                      <div className="mt-3 pt-2.5 border-t border-neutral-200/50 dark:border-neutral-700/50">
+                        <a
+                          href={submissionResult.mailtoUrl}
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          <Send className="w-3 h-3" />
+                          <span>Also open directly in your email app</span>
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

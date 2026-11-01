@@ -11,11 +11,14 @@ export function createApp() {
   // Trust reverse proxies (Google Cloud Run, Vercel, Vite dev server)
   app.set('trust proxy', 1);
 
-  // Security headers with helmet
+  // Security headers with helmet (configured to permit AI Studio iframe embedding and Vite dev server)
   app.use(
     helmet({
-      contentSecurityPolicy: false, // Let dev server and Vite handle CSP
-      crossOriginEmbedderPolicy: false
+      contentSecurityPolicy: false,
+      crossOriginEmbedderPolicy: false,
+      frameguard: false,
+      crossOriginOpenerPolicy: false,
+      crossOriginResourcePolicy: false
     })
   );
 

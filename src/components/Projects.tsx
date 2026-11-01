@@ -93,7 +93,7 @@ export function Projects() {
               Selected Software & Systems
             </h2>
             <p className="mt-3 text-base text-neutral-600 dark:text-neutral-400 max-w-2xl">
-              Dynamically retrieved from GitHub via the Express backend API. Tagged with <code className="text-xs font-mono bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded text-blue-600 dark:text-blue-400">portfolio</code>.
+              Engineered software systems, web applications, and technical platforms built by Precious Ezekiel-Hart.
             </p>
           </div>
 
